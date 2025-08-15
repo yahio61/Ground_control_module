@@ -1,4 +1,4 @@
-#include "data_struct.h"
+#include "inc/data_struct.h"
 #include <esp_now.h>
 #include <WiFi.h>
 
