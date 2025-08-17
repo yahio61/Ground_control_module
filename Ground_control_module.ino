@@ -1,6 +1,7 @@
 #include "inc/data_struct.h"
 #include <esp_now.h>
 #include <WiFi.h>
+#include "files/user_sd.h"
 
 #define LCD Serial1
 #define LORA Serial2
@@ -73,6 +74,7 @@ void setup() {
 
   Serial.begin(SERIAL_BAUD);
   delay(100);
+  sd_init(SD, FILE_PATH);
 }
 
 void loop() {
@@ -81,6 +83,7 @@ void loop() {
   if (length == 64 && veriler.dataYapi.CR == '\r' && veriler.dataYapi.LF == '\n' && calculateCRC(&veriler) == veriler.dataYapi.checkSum && veriler.dataYapi.basla == 0xFF) {
     printDatasPacked(&veriler);
     esp_now_send(broadcastAddress, (uint8_t *)&veriler, sizeof(veriler));
+    sd_write_datas(SD, FILE_PATH, &veriler);
 
     sprintf(data, "t1.txt=\"%.6f\"", veriler.dataYapi.lat);
     Lcd_send(data);
